@@ -154,6 +154,21 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+vim.diagnostic.config {
+  virtual_text = {
+    source = true, -- Показывать источник (LSP)
+    spacing = 4, -- Отступ от текста
+    prefix = '●', -- Символ перед сообщением
+  },
+  signs = true, -- Показывать значки в левом столбце
+  underline = true, -- Подчеркивать проблемные места
+  update_in_insert = false,
+  severity_sort = true, -- Сортировать ошибки по важности
+  float = {
+    border = 'rounded',
+    source = true,
+  },
+}
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -654,11 +669,18 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = { 'isort', 'black' },
+        python = { 'ruff' },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         -- javascript = { { "prettierd", "prettier" } },
+      },
+      formatters = {
+        ruff = {
+          command = 'ruff',
+          args = { 'format', '-' },
+          stdin = true,
+        },
       },
     },
   },
@@ -854,7 +876,6 @@ require('lazy').setup({
       -- Prefer git instead of curl in order to improve connectivity in some environments
       require('nvim-treesitter.install').prefer_git = true
       ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
 
       -- There are additional nvim-treesitter modules that you can use to interact
       -- with nvim-treesitter. You should go explore a few and see what interests you:
