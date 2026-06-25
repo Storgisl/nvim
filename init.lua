@@ -322,7 +322,7 @@ require('lazy').setup({
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
-    branch = '0.1.x',
+    branch = 'master',
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
@@ -895,7 +895,35 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+    },
+    config = function(_, opts)
+      require('gitsigns').setup(opts)
 
+      -- Normal mode keymaps
+      local map = vim.keymap.set
+      map('n', '<leader>hs', ':Gitsigns stage_hunk<CR>', { desc = 'Stage hunk' })
+      map('n', '<leader>hr', ':Gitsigns reset_hunk<CR>', { desc = 'Reset hunk' })
+      map('n', '<leader>hS', ':Gitsigns stage_buffer<CR>', { desc = 'Stage buffer' })
+      map('n', '<leader>hR', ':Gitsigns reset_buffer<CR>', { desc = 'Reset buffer' })
+      map('n', '<leader>hp', ':Gitsigns preview_hunk<CR>', { desc = 'Preview hunk' })
+      map('n', '<leader>hb', ':Gitsigns blame_line<CR>', { desc = 'Blame line' })
+
+      -- Visual mode: stage the selected lines as a hunk
+      map('v', '<leader>hs', function()
+        require('gitsigns').stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+      end, { desc = 'Stage selected lines' })
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
