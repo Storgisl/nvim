@@ -154,6 +154,8 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+vim.g.disable_autoformat = false
+
 vim.diagnostic.config {
   virtual_text = {
     source = true, -- Показывать источник (LSP)
@@ -171,7 +173,11 @@ vim.diagnostic.config {
 }
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
-
+vim.keymap.set('n', '<leader>fn', function()
+  vim.g.disable_autoformat = true
+  vim.cmd 'write'
+  vim.g.disable_autoformat = false
+end, { desc = '[S]ave [N]o formatting' })
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
